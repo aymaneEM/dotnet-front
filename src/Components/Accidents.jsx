@@ -29,15 +29,9 @@ export default function Accidents({ user }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [reload, setReload] = useState(false);
   const [comment, setComment] = useState('');
-
-  const points = [
-    {
-      id: 1,
-      title: 'Round Pond',
-      lat: 34.25722243428076,
-      lng: -6.576027658687451,
-    },
-  ];
+  const [viewedLat, setViewedLat] = useState();
+  const [viewedLong, setViewedLong] = useState();
+  const [viewedTitle, setViewedTitle] = useState('');
 
   useEffect(() => {
     async function getAccidents() {
@@ -102,7 +96,15 @@ export default function Accidents({ user }) {
               </Td>
               <Td>{moment(e?.time).format('MMMM Do YYYY, h:mm:ss a')}</Td>
               <Td>
-                <Button colorScheme="blue" onClick={onOpen}>
+                <Button
+                  colorScheme="blue"
+                  onClick={() => {
+                    setViewedTitle(e?.category?.name);
+                    setViewedLat(e?.location?.latitude);
+                    setViewedLong(e?.location?.longitude);
+                    onOpen();
+                  }}
+                >
                   View
                 </Button>
               </Td>
@@ -137,23 +139,14 @@ export default function Accidents({ user }) {
                 bootstrapURLKeys={{
                   key: 'AIzaSyBjdo9fBDQkkbJrhVs9H2hlFn7thh2hWac',
                   language: 'en',
-                  region: 'US',
                 }}
                 defaultCenter={{
-                  lat: 34.25722243428076,
-                  lng: -6.576027658687451,
+                  lat: viewedLat,
+                  lng: viewedLong,
                 }}
-                // defaultCenter={{
-                //   lat: Number(data[0]?.location?.latitude),
-                //   lng: Number(data[0]?.location?.longitude),
-                // }}
                 defaultZoom={15}
               >
-                <MyMarker
-                  key={points[0]?.id}
-                  lat={points[0]?.lat}
-                  lng={points[0]?.lng}
-                />
+                <MyMarker key={viewedTitle} lat={viewedLat} lng={viewedLong} />
               </GoogleMapReact>
             </div>
           </ModalBody>
