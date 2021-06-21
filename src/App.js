@@ -1,42 +1,42 @@
-import React from 'react';
-import {
-  ChakraProvider,
-  Box,
-  Text,
-  Link,
-  VStack,
-  Code,
-  Grid,
-  theme,
-} from '@chakra-ui/react';
-import { ColorModeSwitcher } from './ColorModeSwitcher';
-import { Logo } from './Logo';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
+import About from './Components/About';
+import Accidents from './Components/Accidents';
+import Home from './Components/Home';
+import Navbar from './Components/Navbar';
+import Login from './Components/Login';
 
-function App() {
+export default function App() {
+  const [user, setUser] = useState({});
+  useEffect(() => {
+    async function getUser() {
+      const response = await fetch('http://localhost:8000/api/user', {
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+      });
+      const content = await response.json();
+      setUser(content);
+    }
+    getUser();
+  }, []);
+
   return (
-    <ChakraProvider theme={theme}>
-      <Box textAlign="center" fontSize="xl">
-        <Grid minH="100vh" p={3}>
-          <ColorModeSwitcher justifySelf="flex-end" />
-          <VStack spacing={8}>
-            <Logo h="40vmin" pointerEvents="none" />
-            <Text>
-              Edit <Code fontSize="xl">src/App.js</Code> and save to reload.
-            </Text>
-            <Link
-              color="teal.500"
-              href="https://chakra-ui.com"
-              fontSize="2xl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learn Chakra
-            </Link>
-          </VStack>
-        </Grid>
-      </Box>
-    </ChakraProvider>
+    <BrowserRouter>
+      <Navbar user={user} />
+      <Switch>
+        <Route exact path="/about">
+          <About />
+        </Route>
+        <Route exact path="/login">
+          <Login user={user} />
+        </Route>
+        <Route exact path="/accidents">
+          <Accidents user={user} />
+        </Route>
+        <Route exact path="/">
+          <Home />
+        </Route>
+      </Switch>
+    </BrowserRouter>
   );
 }
-
-export default App;
