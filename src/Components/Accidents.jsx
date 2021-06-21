@@ -93,7 +93,7 @@ export default function Accidents({ user }) {
               <Td>{e?.comment}</Td>
               <Td>
                 {/* <img src={e?.liveImage} alt="Crash" /> */}
-                {/* <img src={img} width="100px" height="100px" /> */}
+                <img src={img} width="100px" height="100px" />
               </Td>
               <Td>
                 <Text color={e?.status === 'confirmed' ? '#4BB543' : '#FF0000'}>
