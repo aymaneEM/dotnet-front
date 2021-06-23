@@ -27,14 +27,14 @@ export default function Accidents({ passedDown }) {
                     'https://roadsafeazurefuncs20210609092106.azurewebsites.net/api/GetDangerTrigger'
                 )
                 .then(response => {
-                    setData(response?.data?.filter(e => e?.status === "confirmed"));
+                    setData(response?.data?.filter(e => e?.status === "confirmed")?.sort((a, b) => Date.parse(b?.time) - Date.parse(a?.time)));
                 });
         }
         getAccidents();
     }, [reload]);
 
     const hide = index => {
-        data[index].status = 'onhold'
+        data[index].status = 'inactive'
         axios
             .post(
                 'https://roadsafeazurefuncs20210609092106.azurewebsites.net/api/PutDangerTrigger',
@@ -85,7 +85,7 @@ export default function Accidents({ passedDown }) {
                                 <Td>{moment(e?.time).format('MMMM Do YYYY, h:mm:ss a')}</Td>
                                 <Td>
                                     <Button colorScheme="red" onClick={() => hide(index)}>
-                                        Hide
+                                        Set Inactive
                                     </Button>
                                 </Td>
                             </Tr>

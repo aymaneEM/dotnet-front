@@ -19,8 +19,8 @@ import { Avatar, Text } from "@chakra-ui/react"
 import ListIcon from '@material-ui/icons/List';
 import TimerIcon from '@material-ui/icons/Timer';
 import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
-
-
+import Generate from "./Components/Generate"
+import BallotIcon from '@material-ui/icons/Ballot';
 const drawerWidth = 350;
 
 const useStyles = makeStyles((theme) => ({
@@ -111,8 +111,6 @@ export default function App() {
             <Divider />
             <Link to="/pending">
               <ListItem button>
-                {/* const links = [{title: 'Pending Alerts', icon: "Timer", link: "/pending" }, {title: 'Ongoing Alerts', icon: "ErrorOutlineIcon", link: "/ongoing" },
-              {title: 'Alerts log', icon: "ListIcon", link: "/accidents" }] */}
                 <TimerIcon style={{ "marginRight": "20px" }} />
                 <ListItemText primary="Pending Alerts" />
               </ListItem>
@@ -131,12 +129,20 @@ export default function App() {
               </ListItem>
             </Link>
             <Divider />
+            <Link to="/generate">
+              <ListItem button>
+                <BallotIcon style={{ "marginRight": "20px" }} />
+                <ListItemText primary="Generate csv" />
+              </ListItem>
+            </Link>
+            <Divider />
             <div className={classes.logout}>
               <Divider />
               <ListItem button onClick={logout}>
                 <ListItemIcon><ExitToAppIcon /></ListItemIcon>
                 <ListItemText primary="Logout" /></ListItem></div>
           </List>
+
 
         </Drawer>}
 
@@ -152,6 +158,9 @@ export default function App() {
             </Route>
             <Route exact path="/ongoing">
               <Ongoing passedDown={passedDown} />
+            </Route>
+            <Route exact path="/generate">
+              <Generate passedDown={passedDown} />
             </Route>
           </Switch>
         </main>

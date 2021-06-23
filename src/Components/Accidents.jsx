@@ -47,7 +47,8 @@ export default function Accidents({ passedDown }) {
           'https://roadsafeazurefuncs20210609092106.azurewebsites.net/api/GetDangerTrigger'
         )
         .then(response => {
-          setData(response?.data);
+          setData(response?.data?.sort((a, b) => Date.parse(b?.time) - Date.parse(a?.time)));
+          console.log(JSON.stringify(response?.data[9]))
         });
     }
     getAccidents();
@@ -105,13 +106,18 @@ export default function Accidents({ passedDown }) {
                 </Td>
                 <Td>{e?.comment}</Td>
                 <Td>
-                  {/* <img src={e?.liveImage} alt="Crash" /> */}
-                  <img src={img} width="100px" height="100px" alt="crash img" />
+                  <img src={e?.liveImage} width="100px" height="50px" alt="Crash" />
+                  {/* <img src={img} width="100px" height="100px" alt="crash img" /> */}
                 </Td>
+
+
                 <Td>
-                  <Text color={e?.status === 'confirmed' ? '#4BB543' : '#FF0000'}>
+                  {e?.status === "inactive" ? <Text color="rgb(104, 104, 104)">
                     {e?.status?.charAt(0).toUpperCase() + e?.status?.substring(1)}
-                  </Text>
+                  </Text> :
+                    <Text color={e?.status === 'confirmed' ? '#4BB543' : '#FF0000'}>
+                      {e?.status?.charAt(0).toUpperCase() + e?.status?.substring(1)}
+                    </Text>}
                 </Td>
                 <Td>{moment(e?.time).format('MMMM Do YYYY, h:mm:ss a')}</Td>
                 {/* <Td>
@@ -127,7 +133,7 @@ export default function Accidents({ passedDown }) {
                   View
                 </Button>
               </Td> */}
-                <Td>
+                < Td >
                   <Button onClick={() => {
                     onOpen();
                     viewAccident(e?.id)
@@ -197,7 +203,7 @@ export default function Accidents({ passedDown }) {
               </Tr>
             ))}
           </Tbody>
-        </Table>}
+        </Table >}
 
       {/* <Modal isOpen={isOpen} onClose={onClose} size="6xl">
         <ModalOverlay />
@@ -228,7 +234,7 @@ export default function Accidents({ passedDown }) {
           </ModalFooter>
         </ModalContent>
       </Modal> */}
-    </div>
+    </div >
   );
 }
 

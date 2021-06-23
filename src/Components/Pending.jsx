@@ -30,7 +30,7 @@ export default function Accidents({ passedDown }) {
                     'https://roadsafeazurefuncs20210609092106.azurewebsites.net/api/GetDangerTrigger'
                 )
                 .then(response => {
-                    setData(response?.data?.filter(e => e?.status === "onhold"));
+                    setData(response?.data?.filter(e => e?.status === "onhold")?.sort((a, b) => Date.parse(b?.time) - Date.parse(a?.time)));
                 });
         }
         getAccidents();
