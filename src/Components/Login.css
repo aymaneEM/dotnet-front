@@ -1,0 +1,20 @@
+.bod{
+    height:85vh;
+    width: 100%;
+}
+.wrapper2 {
+  margin: auto;
+  margin-top: 20px;
+  width: 22%;
+  padding: 15px;
+}
+
+.wrapper2 .logo {
+    margin: 0 auto;
+    display:block;
+}
+
+.wrapper2 .sub {
+    margin: 25px auto;
+    display:block;
+}
