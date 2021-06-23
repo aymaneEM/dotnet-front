@@ -15,9 +15,9 @@ import {
   ModalBody,
   ModalCloseButton,
   Text,
-  extendTheme,
-  Box
 } from '@chakra-ui/react';
+import Divider from '@material-ui/core/Divider';
+
 // import GoogleMapReact from 'google-map-react';
 import './Accidents.css';
 import axios from 'axios';
@@ -28,29 +28,12 @@ import img from '../crash.png';
 import { Redirect } from 'react-router-dom';
 
 
-const theme = extendTheme({
-  textStyles: {
-    title: {
-      // you can also use responsive styles
-      fontSize: ["24px", "30px"],
-      fontWeight: "bold",
-      lineHeight: "110%",
-      letterSpacing: "-2%",
-    },
-    info: {
-      fontSize: ["16px", "24px"],
-      // fontWeight: "semibold",
-      lineHeight: "110%",
-    },
-  },
-})
-
 export default function Accidents({ passedDown }) {
   const [data, setData] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [viewed, setViewed] = useState()
+  const [singleData, setSingleData] = useState()
 
-  const [reload, setReload] = useState(false);
+  // const [reload, setReload] = useState(false);
   // const [comment, setComment] = useState('');
   // const [viewedLat, setViewedLat] = useState();
   // const [viewedLong, setViewedLong] = useState();
@@ -65,29 +48,31 @@ export default function Accidents({ passedDown }) {
         )
         .then(response => {
           setData(response?.data);
-          console.log(response?.data)
         });
     }
     getAccidents();
-    console.log(passedDown)
+  }, []);
 
-  }, [reload]);
+  const viewAccident = async (id) => {
+    await axios.get(`https://roadsafeazurefuncs20210609092106.azurewebsites.net/api/DangerItem/${id}`).then((res) => {
+      setSingleData(res?.data[0])
+    })
+  }
 
-  const toggleHide = index => {
-    data[index].status === 'confirmed'
-      ? (data[index].status = 'onhold')
-      : (data[index].status = 'confirmed');
-    axios
-      .post(
-        'https://roadsafeazurefuncs20210609092106.azurewebsites.net/api/PutDangerTrigger',
-        data[index]
-      )
-      .then(res => {
-        console.log(res);
-        setReload(!reload);
-      });
-  };
-  console.log(`passed down is ${passedDown}`)
+  // const toggleHide = index => {
+  //   data[index].status === 'confirmed'
+  //     ? (data[index].status = 'onhold')
+  //     : (data[index].status = 'confirmed');
+  //   axios
+  //     .post(
+  //       'https://roadsafeazurefuncs20210609092106.azurewebsites.net/api/PutDangerTrigger',
+  //       data[index]
+  //     )
+  //     .then(res => {
+  //       console.log(res);
+  //       setReload(!reload);
+  //     });
+  // };
 
   if (!passedDown) {
     return <Redirect to="/" />
@@ -95,40 +80,41 @@ export default function Accidents({ passedDown }) {
 
   return (
     <div className="wrapper">
-      <Table variant="simple">
-        <Thead>
-          <Tr>
-            <Th>Type</Th>
-            <Th>Comment</Th>
-            <Th>Image</Th>
-            <Th>Status</Th>
-            <Th>Time</Th>
-            {/* <Th>Location</Th> */}
-            <Th>More Info</Th>
-            {/* <Th>Action</Th> */}
-          </Tr>
-        </Thead>
-        <Tbody>
-          {data.map((e, index) => (
-            <Tr key={index}>
-              <Td>
-                {e?.category?.name
-                  ?.split(' ')
-                  .map(e => e.charAt(0).toUpperCase() + e.substring(1))
-                  .join(' ')}
-              </Td>
-              <Td>{e?.comment}</Td>
-              <Td>
-                {/* <img src={e?.liveImage} alt="Crash" /> */}
-                <img src={img} width="100px" height="100px" alt="crash img" />
-              </Td>
-              <Td>
-                <Text color={e?.status === 'confirmed' ? '#4BB543' : '#FF0000'}>
-                  {e?.status?.charAt(0).toUpperCase() + e?.status?.substring(1)}
-                </Text>
-              </Td>
-              <Td>{moment(e?.time).format('MMMM Do YYYY, h:mm:ss a')}</Td>
-              {/* <Td>
+      {data?.length === 0 ? <Text fontSize="4xl">No Alerts</Text> :
+        <Table variant="simple">
+          <Thead>
+            <Tr>
+              <Th>Type</Th>
+              <Th>Comment</Th>
+              <Th>Image</Th>
+              <Th>Status</Th>
+              <Th>Time</Th>
+              {/* <Th>Location</Th> */}
+              <Th>More Info</Th>
+              {/* <Th>Action</Th> */}
+            </Tr>
+          </Thead>
+          <Tbody>
+            {data.map((e, index) => (
+              <Tr key={index}>
+                <Td>
+                  {e?.category?.name
+                    ?.split(' ')
+                    .map(e => e.charAt(0).toUpperCase() + e.substring(1))
+                    .join(' ')}
+                </Td>
+                <Td>{e?.comment}</Td>
+                <Td>
+                  {/* <img src={e?.liveImage} alt="Crash" /> */}
+                  <img src={img} width="100px" height="100px" alt="crash img" />
+                </Td>
+                <Td>
+                  <Text color={e?.status === 'confirmed' ? '#4BB543' : '#FF0000'}>
+                    {e?.status?.charAt(0).toUpperCase() + e?.status?.substring(1)}
+                  </Text>
+                </Td>
+                <Td>{moment(e?.time).format('MMMM Do YYYY, h:mm:ss a')}</Td>
+                {/* <Td>
                 <Button
                   colorScheme="blue"
                   onClick={() => {
@@ -141,30 +127,60 @@ export default function Accidents({ passedDown }) {
                   View
                 </Button>
               </Td> */}
-              <Td>
-                <Button onClick={(index) => { onOpen(); setViewed(index); }}>More</Button>
+                <Td>
+                  <Button onClick={() => {
+                    onOpen();
+                    viewAccident(e?.id)
+                  }}>More</Button>
 
-                <Modal blockScrollOnMount={false} isOpen={isOpen} onClose={onClose}>
-                  <ModalOverlay />
-                  <ModalContent>
-                    <ModalHeader>{data[index].id}</ModalHeader>
-                    <ModalCloseButton />
-                    <ModalBody>
-                      <Box textStyle="h1">This is a box</Box>
-                      <Text fontWeight="bold" mb="1rem">
-                        You can scroll the content behind the modal
-                      </Text>
-                    </ModalBody>
+                  <Modal size="xl" isOpen={isOpen} onClose={onClose}>
+                    <ModalOverlay />
+                    <ModalContent>
+                      <ModalHeader>Accident Info</ModalHeader>
+                      <ModalCloseButton />
+                      <ModalBody>
+                        <Text mb="1rem">
+                          <span style={{ "fontWeight": "bolder", fontSize: "16px", letterSpacing: "1px" }}>Category:  </span>{singleData?.category?.name?.split(' ')
+                            .map(e => e.charAt(0).toUpperCase() + e.substring(1))
+                            .join(' ')}
+                        </Text>
+                        <Text mb="1rem">
+                          <span style={{ "fontWeight": "bolder", fontSize: "16px", letterSpacing: "1px" }}>Comment:  </span>{singleData?.comment}
+                        </Text>
+                        {singleData?.category?.content?.length && <Text mb="1rem">
+                          <span style={{ "fontWeight": "bolder", fontSize: "16px", letterSpacing: "1px" }}>Casualties: {singleData?.category?.content?.length}  </span>{singleData?.category?.content.map((e, key) => (
+                            <>
+                              <p><span style={{ fontWeight: "bold" }}>Age: </span>{e?.casualtyAge}</p>
+                              <p><span style={{ fontWeight: "bold" }}>Gender: </span>{e?.casualtyGender}</p>
+                              <p><span style={{ fontWeight: "bold" }}>Profession: </span>{e?.casualtyProfession}</p>
+                              <p><span style={{ fontWeight: "bold" }}>Type: </span>{e?.casualtytype}</p>
+                              <p><span style={{ fontWeight: "bold" }}>Injury Degree: </span>{e?.injuryDegree}</p>
+                              <Divider />
+                            </>
+                          ))}
+                        </Text>}
+                        <Text mb="1rem">
+                          <span style={{ "fontWeight": "bolder", fontSize: "16px", letterSpacing: "1px" }}>Location:  </span>{`Latitude: ${singleData?.location?.latitude}, Longitude: ${singleData?.location?.longitude}`}
+                        </Text>
+                        <Text mb="1rem">
+                          <span style={{ "fontWeight": "bolder", fontSize: "16px", letterSpacing: "1px" }}>Time:  </span>{moment(e?.time).format('MMMM Do YYYY, h:mm:ss a')}
+                        </Text>
+                        <Text mb="1rem">
+                          <span style={{ "fontWeight": "bolder", fontSize: "16px", letterSpacing: "1px" }}>Status:  </span>{singleData?.status?.split(' ')
+                            .map(e => e.charAt(0).toUpperCase() + e.substring(1))
+                            .join(' ')}
+                        </Text>
+                      </ModalBody>
 
-                    <ModalFooter>
-                      <Button colorScheme="blue" mr={3} onClick={onClose}>
-                        Close
-                      </Button>
-                    </ModalFooter>
-                  </ModalContent>
-                </Modal>
-              </Td>
-              {/* <Td>
+                      <ModalFooter>
+                        <Button colorScheme="blue" mr={3} onClick={onClose}>
+                          Close
+                        </Button>
+                      </ModalFooter>
+                    </ModalContent>
+                  </Modal>
+                </Td>
+                {/* <Td>
                 {e?.status === 'on hold' ? (
                   <Button
                     colorScheme="green"
@@ -178,10 +194,10 @@ export default function Accidents({ passedDown }) {
                   </Button>
                 )}
               </Td> */}
-            </Tr>
-          ))}
-        </Tbody>
-      </Table>
+              </Tr>
+            ))}
+          </Tbody>
+        </Table>}
 
       {/* <Modal isOpen={isOpen} onClose={onClose} size="6xl">
         <ModalOverlay />

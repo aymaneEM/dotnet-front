@@ -16,10 +16,9 @@ import Ongoing from "./Components/Ongoing"
 import Pending from "./Components/Pending"
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Avatar, Text } from "@chakra-ui/react"
-import { Button } from '@material-ui/core';
 import ListIcon from '@material-ui/icons/List';
 import TimerIcon from '@material-ui/icons/Timer';
-import ErrorIcon from '@material-ui/icons/Error';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 
 const drawerWidth = 350;
@@ -72,7 +71,6 @@ export default function App() {
       }
     }
     getUser();
-    console.log(passedDown)
   }, []);
 
   const logout = async () => {
@@ -104,30 +102,34 @@ export default function App() {
         >
           <div className={classes.toolbar} />
           <div className={classes.profile}>
-            <Avatar size="2xl" name="Dan Abrahmov" src="https://bit.ly/dan-abramov" />
-            <Divider />
+            <Avatar size="2xl" name="Dan Abrahmov" src="https://bit.ly/dan-abramov" style={{ "marginBottom": "20px" }} />
 
             <Text fontSize="lg" fontWeight="bold">{user?.name}</Text>
-            <Text fontSize="lg" fontWeight="bold">{user?.email}</Text>
+            <Text fontSize="lg" fontWeight="bold" style={{ "marginBottom": "50px" }}>{user?.email}</Text>
           </div>
           <List>
             <Divider />
-            <ListItem button>
-              {/* const links = [{title: 'Pending Alerts', icon: "Timer", link: "/pending" }, {title: 'Ongoing Alerts', icon: "ErrorOutlineIcon", link: "/ongoing" },
+            <Link to="/pending">
+              <ListItem button>
+                {/* const links = [{title: 'Pending Alerts', icon: "Timer", link: "/pending" }, {title: 'Ongoing Alerts', icon: "ErrorOutlineIcon", link: "/ongoing" },
               {title: 'Alerts log', icon: "ListIcon", link: "/accidents" }] */}
-              <TimerIcon style={{ "marginRight": "20px" }} />
-              <Link to="/pending"><ListItemText primary="Pending Alerts" /></Link>
-            </ListItem>
+                <TimerIcon style={{ "marginRight": "20px" }} />
+                <ListItemText primary="Pending Alerts" />
+              </ListItem>
+            </Link>
             <Divider />
-            <ListItem button>
-              <ListIcon style={{ "marginRight": "20px" }} />
-              <Link to="/ongoing"><ListItemText primary="Ongoing Alerts" /></Link>
-            </ListItem>
+            <Link to="/ongoing">
+              <ListItem button>
+                <ErrorOutlineIcon style={{ "marginRight": "20px" }} />
+                <ListItemText primary="Ongoing Alerts" />
+              </ListItem></Link>
             <Divider />
-            <ListItem button>
-              <ErrorIcon style={{ "marginRight": "20px" }} />
-              <Link to="/accidents"><ListItemText primary="Alerts Log" /></Link>
-            </ListItem>
+            <Link to="/accidents">
+              <ListItem button>
+                <ListIcon style={{ "marginRight": "20px" }} />
+                <ListItemText primary="Alerts Log" />
+              </ListItem>
+            </Link>
             <Divider />
             <div className={classes.logout}>
               <Divider />
@@ -143,7 +145,6 @@ export default function App() {
           {/* <Navbar user={user} /> */}
           <Switch>
             <Route exact path="/accidents">
-              {console.log(`this is ${passedDown}`)}
               <Accidents passedDown={passedDown} />
             </Route>
             <Route exact path="/pending">

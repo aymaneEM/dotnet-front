@@ -31,7 +31,6 @@ export default function Accidents({ passedDown }) {
                 )
                 .then(response => {
                     setData(response?.data?.filter(e => e?.status === "onhold"));
-                    console.log(response?.data)
                 });
         }
         getAccidents();
@@ -45,7 +44,6 @@ export default function Accidents({ passedDown }) {
                 data[index]
             )
             .then(res => {
-                console.log(res);
                 setReload(!reload);
             });
     };
@@ -56,49 +54,50 @@ export default function Accidents({ passedDown }) {
 
     return (
         <div className="wrapper">
-            <Table variant="simple">
-                <Thead>
-                    <Tr>
-                        <Th>Type</Th>
-                        <Th>Comment</Th>
-                        <Th>Image</Th>
-                        <Th>Status</Th>
-                        <Th>Time</Th>
-                        <Th>Action</Th>
-                    </Tr>
-                </Thead>
-                <Tbody>
-                    {data.map((e, index) => (
-                        <Tr key={index}>
-                            <Td>
-                                {e?.category?.name
-                                    ?.split(' ')
-                                    .map(e => e.charAt(0).toUpperCase() + e.substring(1))
-                                    .join(' ')}
-                            </Td>
-                            <Td>{e?.comment}</Td>
-                            <Td>
-                                {/* <img src={e?.liveImage} alt="Crash" /> */}
-                                <img src={img} width="100px" height="100px" alt="crash img" />
-                            </Td>
-                            <Td>
-                                <Text color={e?.status === 'confirmed' ? '#4BB543' : '#FF0000'}>
-                                    {e?.status?.charAt(0).toUpperCase() + e?.status?.substring(1)}
-                                </Text>
-                            </Td>
-                            <Td>{moment(e?.time).format('MMMM Do YYYY, h:mm:ss a')}</Td>
-                            <Td>
-                                <Button
-                                    colorScheme="green"
-                                    onClick={() => show(index)}
-                                >
-                                    Show
-                                </Button>
-                            </Td>
+            {data?.length === 0 ? <Text fontSize="4xl">No Pending Alerts</Text> :
+                <Table variant="simple">
+                    <Thead>
+                        <Tr>
+                            <Th>Type</Th>
+                            <Th>Comment</Th>
+                            <Th>Image</Th>
+                            <Th>Status</Th>
+                            <Th>Time</Th>
+                            <Th>Action</Th>
                         </Tr>
-                    ))}
-                </Tbody>
-            </Table>
+                    </Thead>
+                    <Tbody>
+                        {data.map((e, index) => (
+                            <Tr key={index}>
+                                <Td>
+                                    {e?.category?.name
+                                        ?.split(' ')
+                                        .map(e => e.charAt(0).toUpperCase() + e.substring(1))
+                                        .join(' ')}
+                                </Td>
+                                <Td>{e?.comment}</Td>
+                                <Td>
+                                    {/* <img src={e?.liveImage} alt="Crash" /> */}
+                                    <img src={img} width="100px" height="100px" alt="crash img" />
+                                </Td>
+                                <Td>
+                                    <Text color={e?.status === 'confirmed' ? '#4BB543' : '#FF0000'}>
+                                        {e?.status?.charAt(0).toUpperCase() + e?.status?.substring(1)}
+                                    </Text>
+                                </Td>
+                                <Td>{moment(e?.time).format('MMMM Do YYYY, h:mm:ss a')}</Td>
+                                <Td>
+                                    <Button
+                                        colorScheme="green"
+                                        onClick={() => show(index)}
+                                    >
+                                        Show
+                                    </Button>
+                                </Td>
+                            </Tr>
+                        ))}
+                    </Tbody>
+                </Table>}
         </div>
     );
 }

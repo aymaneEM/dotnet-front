@@ -32,7 +32,6 @@ export default function Login({ passedDown }) {
   };
 
   if (passedDown) {
-    console.log(passedDown)
     return <Redirect to="/accidents" />;
   }
 

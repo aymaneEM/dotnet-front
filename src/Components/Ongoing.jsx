@@ -28,7 +28,6 @@ export default function Accidents({ passedDown }) {
                 )
                 .then(response => {
                     setData(response?.data?.filter(e => e?.status === "confirmed"));
-                    console.log(response?.data)
                 });
         }
         getAccidents();
@@ -42,7 +41,6 @@ export default function Accidents({ passedDown }) {
                 data[index]
             )
             .then(res => {
-                console.log(res);
                 setReload(!reload);
             });
     };
