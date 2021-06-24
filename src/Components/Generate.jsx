@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import MUIDataTable from "mui-datatables";
 import axios from "axios";
 
-export default function Accidents({ passedDown }) {
+export default function Accidents() {
     const [data, setData] = useState([]);
-    const [reload, setReload] = useState(false);
     useEffect(() => {
 
         async function getAccidents() {
@@ -17,7 +16,7 @@ export default function Accidents({ passedDown }) {
                 });
         }
         getAccidents();
-    }, [reload]);
+    }, []);
 
     const columns = ["id", "comment", "time", "status"];
 

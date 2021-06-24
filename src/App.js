@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     width: drawerWidth,
-    background: "linear-gradient(0deg, #e0b3ff 20%, #e0b3ff 100%)"
+    background: "linear-gradient(0deg, #fff 0%, #e0b3ff 100%)"
   },
   toolbar: theme.mixins.toolbar,
   content: {
@@ -45,7 +45,6 @@ const useStyles = makeStyles((theme) => ({
   logout: {
     position: "fixed",
     bottom: "0",
-
   },
   profile: {
     margin: "0 auto",
@@ -102,7 +101,7 @@ export default function App() {
         >
           <div className={classes.toolbar} />
           <div className={classes.profile}>
-            <Avatar size="2xl" name="Dan Abrahmov" src="https://bit.ly/dan-abramov" style={{ "marginBottom": "20px" }} />
+            <Avatar size="2xl" name={user?.name} style={{ "marginBottom": "20px" }} />
 
             <Text fontSize="lg" fontWeight="bold">{user?.name}</Text>
             <Text fontSize="lg" fontWeight="bold" style={{ "marginBottom": "50px" }}>{user?.email}</Text>
@@ -132,7 +131,7 @@ export default function App() {
             <Link to="/generate">
               <ListItem button>
                 <BallotIcon style={{ "marginRight": "20px" }} />
-                <ListItemText primary="Generate csv" />
+                <ListItemText primary="Generate CSV" />
               </ListItem>
             </Link>
             <Divider />

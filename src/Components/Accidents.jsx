@@ -26,12 +26,47 @@ import { Button } from '@chakra-ui/react';
 // import MyMarker from './MyMarker';
 import img from '../crash.png';
 import { Redirect } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core/styles';
+import MuiModal from '@material-ui/core/Modal';
+
+function getModalStyle() {
+  const top = 50;
+  const left = 50;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
+
+const useStyles = makeStyles((theme) => ({
+  paper: {
+    position: 'absolute',
+    maxWidth: "1200px",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  },
+}));
 
 
 export default function Accidents({ passedDown }) {
   const [data, setData] = useState([]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [singleData, setSingleData] = useState()
+
+  const [image, setImage] = useState()
+
+  const classes = useStyles();
+  const [modalStyle] = React.useState(getModalStyle);
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   // const [reload, setReload] = useState(false);
   // const [comment, setComment] = useState('');
@@ -79,6 +114,19 @@ export default function Accidents({ passedDown }) {
     return <Redirect to="/" />
   }
 
+  const viewImage = async (id) => {
+    await axios.get(`https://roadsafeazurefuncs20210609092106.azurewebsites.net/api/DangerItem/${id}`).then((res) => {
+      setImage(res?.data[0]?.liveImage)
+    })
+  }
+
+  const body = (
+    <div style={modalStyle} className={classes.paper}>
+      <img src={image} className="image" alt="Crash" />
+      <MuiModal />
+    </div>
+  );
+
   return (
     <div className="wrapper">
       {data?.length === 0 ? <Text fontSize="4xl">No Alerts</Text> :
@@ -106,10 +154,18 @@ export default function Accidents({ passedDown }) {
                 </Td>
                 <Td>{e?.comment}</Td>
                 <Td>
-                  <img src={e?.liveImage} width="100px" height="50px" alt="Crash" />
-                  {/* <img src={img} width="100px" height="100px" alt="crash img" /> */}
+                  <button type="button" onClick={() => { handleOpen(); viewImage(e?.id) }}>
+                    <img src={e?.liveImage} width="100px" height="50px" alt="Crash" />
+                  </button>
+                  <MuiModal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="simple-modal-title"
+                    aria-describedby="simple-modal-description"
+                  >
+                    {body}
+                  </MuiModal>
                 </Td>
-
 
                 <Td>
                   {e?.status === "inactive" ? <Text color="rgb(104, 104, 104)">
